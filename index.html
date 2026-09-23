@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>欢乐斗地主 · 单机版</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div id="app">
+
+  <!-- ===== 顶部信息栏 ===== -->
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-icon">♠</span>
+      <span class="brand-text">欢乐斗地主</span>
+    </div>
+    <div class="table-stats">
+      <div class="stat"><span class="stat-label">底分</span><span class="stat-val" id="stat-base">100</span></div>
+      <div class="stat"><span class="stat-label">倍数</span><span class="stat-val accent" id="stat-mult">×1</span></div>
+      <div class="stat"><span class="stat-label">总分</span><span class="stat-val" id="stat-total">0</span></div>
+    </div>
+    <div class="topbar-right">
+      <button class="icon-btn" id="btn-sound" title="音效开关">🔊</button>
+      <button class="icon-btn" id="btn-settings" title="设置">⚙</button>
+    </div>
+  </header>
+
+  <!-- ===== 牌桌 ===== -->
+  <main class="table" id="table">
+
+    <!-- 左上底牌区（地主牌） -->
+    <div class="hole-area" id="hole-area">
+      <div class="hole-label">底牌</div>
+      <div class="hole-cards" id="hole-cards"></div>
+    </div>
+
+    <!-- 左侧玩家（右农民） -->
+    <section class="seat seat-left" id="seat-left">
+      <div class="avatar-wrap">
+        <div class="avatar" id="avatar-left">🐑</div>
+        <div class="role-tag hidden" id="role-left">农民</div>
+        <div class="bubble hidden" id="bubble-left"></div>
+      </div>
+      <div class="seat-info">
+        <div class="seat-name" id="name-left">小涵</div>
+        <div class="seat-score" id="score-left">0</div>
+        <div class="hand-count" id="count-left">17 张</div>
+      </div>
+      <div class="timer hidden" id="timer-left"><div class="timer-bar"></div></div>
+    </section>
+
+    <!-- 右侧玩家（左农民） -->
+    <section class="seat seat-right" id="seat-right">
+      <div class="avatar-wrap">
+        <div class="avatar" id="avatar-right">🐯</div>
+        <div class="role-tag hidden" id="role-right">农民</div>
+        <div class="bubble hidden" id="bubble-right"></div>
+      </div>
+      <div class="seat-info">
+        <div class="seat-name" id="name-right">小铭</div>
+        <div class="seat-score" id="score-right">0</div>
+        <div class="hand-count" id="count-right">17 张</div>
+      </div>
+      <div class="timer hidden" id="timer-right"><div class="timer-bar"></div></div>
+    </section>
+
+    <!-- 出牌区 -->
+    <div class="play-zone" id="play-zone">
+      <div class="played" id="played-left"></div>
+      <div class="played center" id="played-center"></div>
+      <div class="played" id="played-right"></div>
+    </div>
+
+    <!-- 中央提示 -->
+    <div class="toast" id="toast"></div>
+    <div class="play-hint hidden" id="play-hint"></div>
+  </main>
+
+  <!-- ===== 我的区域 ===== -->
+  <footer class="my-area">
+    <section class="seat seat-me" id="seat-me">
+      <div class="avatar-wrap">
+        <div class="avatar me" id="avatar-me">🙋</div>
+        <div class="role-tag hidden" id="role-me">农民</div>
+        <div class="bubble hidden" id="bubble-me"></div>
+      </div>
+      <div class="seat-info">
+        <div class="seat-name">我</div>
+        <div class="seat-score" id="score-me">0</div>
+        <div class="hand-count" id="count-me">17 张</div>
+      </div>
+      <div class="timer hidden" id="timer-me"><div class="timer-bar"></div></div>
+    </section>
+
+    <div class="hand-wrap">
+      <div class="hand" id="hand"></div>
+    </div>
+
+    <div class="controls" id="controls">
+      <button class="btn btn-ghost" id="btn-pass" disabled>不出</button>
+      <button class="btn btn-hint" id="btn-hint" disabled>提示</button>
+      <button class="btn btn-primary" id="btn-play" disabled>出牌</button>
+    </div>
+
+    <div class="bid-controls hidden" id="bid-controls">
+      <button class="btn btn-ghost" id="btn-nobid">不叫</button>
+      <button class="btn btn-mini" id="btn-bid1">1 分</button>
+      <button class="btn btn-mini" id="btn-bid2">2 分</button>
+      <button class="btn btn-mini" id="btn-bid3">3 分</button>
+    </div>
+  </footer>
+
+  <!-- ===== 结算面板 ===== -->
+  <div class="overlay hidden" id="overlay-result">
+    <div class="result-card">
+      <div class="result-title" id="result-title">胜利</div>
+      <div class="result-sub" id="result-sub"></div>
+      <div class="result-rows" id="result-rows"></div>
+      <div class="result-actions">
+        <button class="btn btn-ghost" id="btn-again-quit">返回大厅</button>
+        <button class="btn btn-primary" id="btn-again">再来一局</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 大厅/开始界面 ===== -->
+  <div class="overlay" id="overlay-start">
+    <div class="lobby">
+      <div class="lobby-logo">♠ ♥ ♣ ♦</div>
+      <h1 class="lobby-title">欢乐斗地主</h1>
+      <p class="lobby-sub">纯离线 · 无需联网 · 随时随地开局</p>
+      <div class="lobby-diff">
+        <div class="diff-label">机器人难度</div>
+        <div class="diff-group" id="diff-group">
+          <button class="chip" data-diff="easy">新手</button>
+          <button class="chip active" data-diff="normal">普通</button>
+          <button class="chip" data-diff="hard">高手</button>
+        </div>
+      </div>
+      <button class="btn btn-primary btn-lg" id="btn-start">开 始 游 戏</button>
+      <button class="btn btn-link" id="btn-rules">玩法说明</button>
+    </div>
+  </div>
+
+  <!-- ===== 玩法说明 ===== -->
+  <div class="overlay hidden" id="overlay-rules">
+    <div class="rules-card">
+      <h2>玩法说明</h2>
+      <div class="rules-body">
+        <p><b>基本流程</b>：54 张牌，三人各 17 张，留 3 张底牌。依次叫分（1/2/3 分），叫分最高者成为地主并获得底牌。</p>
+        <p><b>牌型</b>：单张、对子、三张、三带一、三带二、顺子（≥5 张连牌）、连对（≥3 对）、飞机、飞机带翅膀、四带二、炸弹（四张相同）、王炸（大小王）。</p>
+        <p><b>大小</b>：3 &lt; 4 &lt; … &lt; 10 &lt; J &lt; Q &lt; K &lt; A &lt; 2 &lt; 小王 &lt; 大王。炸弹可压任意非炸弹牌型，王炸最大。</p>
+        <p><b>计分</b>：底分 × 倍数。每出一次炸弹/王炸倍数 ×2，春天（地主一手未出完农民即出完）倍数 ×2。地主胜则赢两家的分，农民胜则两家各赢地主的分。</p>
+      </div>
+      <button class="btn btn-primary" id="btn-rules-close">知道了</button>
+    </div>
+  </div>
+
+</div>
+
+<script src="js/rules.js"></script>
+<script src="js/ai.js"></script>
+<script src="js/sfx.js"></script>
+<script src="js/game.js"></script>
+<script src="js/ui.js"></script>
+</body>
+</html>
