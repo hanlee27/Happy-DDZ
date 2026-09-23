@@ -73,6 +73,9 @@
       <div class="played" id="played-right"></div>
     </div>
 
+    <!-- 我打出的牌：贴近自己，位置独立于牌桌中央，且可由设置显隐 -->
+    <div class="played played-me" id="played-me"></div>
+
     <!-- 中央提示 -->
     <div class="toast" id="toast"></div>
     <div class="play-hint hidden" id="play-hint"></div>
@@ -155,6 +158,18 @@
         <p><b>计分</b>：底分 × 倍数。每出一次炸弹/王炸倍数 ×2，春天（地主一手未出完农民即出完）倍数 ×2。地主胜则赢两家的分，农民胜则两家各赢地主的分。</p>
       </div>
       <button class="btn btn-primary" id="btn-rules-close">知道了</button>
+    </div>
+  </div>
+
+  <!-- ===== 设置面板 ===== -->
+  <div class="overlay hidden" id="overlay-settings">
+    <div class="settings-card">
+      <h2>设置</h2>
+      <label class="setting-row">
+        <span>显示自己打出的牌</span>
+        <input type="checkbox" id="set-show-own" checked>
+      </label>
+      <button class="btn btn-primary" id="btn-settings-close">确定</button>
     </div>
   </div>
 

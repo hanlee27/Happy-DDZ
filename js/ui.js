@@ -13,7 +13,7 @@
   const SEATS = {
     0: { name: $('name-left'), score: $('score-left'), count: $('count-left'), timer: $('timer-left'), avatar: $('avatar-left'), role: $('role-left'), bubble: $('bubble-left'), played: $('played-left') },
     1: { name: $('name-right'), score: $('score-right'), count: $('count-right'), timer: $('timer-right'), avatar: $('avatar-right'), role: $('role-right'), bubble: $('bubble-right'), played: $('played-right') },
-    2: { score: $('score-me'), count: $('count-me'), avatar: $('avatar-me'), role: $('role-me'), timer: $('timer-me'), bubble: $('bubble-me'), played: $('played-center') }
+    2: { score: $('score-me'), count: $('count-me'), avatar: $('avatar-me'), role: $('role-me'), timer: $('timer-me'), bubble: $('bubble-me'), played: $('played-me') }
   };
 
   const seatUI = (seat) => (seat === 0 ? SEATS[2] : seat === 1 ? SEATS[0] : SEATS[1]);
@@ -28,6 +28,7 @@
     controls: $('controls'), bidControls: $('bid-controls'),
     btnNobid: $('btn-nobid'), btnBid1: $('btn-bid1'), btnBid2: $('btn-bid2'), btnBid3: $('btn-bid3'),
     overlayStart: $('overlay-start'), overlayRules: $('overlay-rules'), overlayResult: $('overlay-result'),
+    overlaySettings: $('overlay-settings'), btnSettingsClose: $('btn-settings-close'), setShowOwn: $('set-show-own'),
     resultTitle: $('result-title'), resultSub: $('result-sub'), resultRows: $('result-rows'),
     btnStart: $('btn-start'), btnRules: $('btn-rules'), btnRulesClose: $('btn-rules-close'),
     btnAgain: $('btn-again'), btnAgainQuit: $('btn-again-quit'),
@@ -39,6 +40,7 @@
   let hintIdx = 0;
   let diff = localStorage.getItem('ddz.diff') || 'normal';
   let soundOn = localStorage.getItem('ddz.sound') !== '0';
+  let showOwnPlayed = localStorage.getItem('ddz.showOwn') !== '0';  // 默认显示自己打出的牌
   let myTurn = false;
   let busy = false;
 
@@ -223,6 +225,12 @@
 
   function showPlayed(seat, cards) {
     const s = seatUI(seat);
+    // 自己打出的牌：受“显示自己打出的牌”设置控制
+    if (seat === HUMAN && !showOwnPlayed) {
+      const pm = document.getElementById('played-me');
+      if (pm) pm.innerHTML = '';
+      return;
+    }
     s.played.innerHTML = '';
     if (!cards || !cards.length) return;
     const row = rowOf(cards, true);
@@ -455,7 +463,16 @@
   });
 
   el.btnRules.addEventListener('click', () => el.overlayRules.classList.remove('hidden'));
-  $('btn-settings').addEventListener('click', () => el.overlayRules.classList.remove('hidden'));
+  $('btn-settings').addEventListener('click', () => {
+    el.setShowOwn.checked = showOwnPlayed;
+    el.overlaySettings.classList.remove('hidden');
+  });
+  el.btnSettingsClose.addEventListener('click', () => el.overlaySettings.classList.add('hidden'));
+  el.setShowOwn.addEventListener('change', () => {
+    showOwnPlayed = el.setShowOwn.checked;
+    localStorage.setItem('ddz.showOwn', showOwnPlayed ? '1' : '0');
+    if (!showOwnPlayed) { const pm = document.getElementById('played-me'); if (pm) pm.innerHTML = ''; }
+  });
   el.btnRulesClose.addEventListener('click', () => el.overlayRules.classList.add('hidden'));
 
   el.btnStart.addEventListener('click', () => {

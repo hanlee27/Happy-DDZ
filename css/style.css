@@ -412,6 +412,22 @@ html, body {
 .rules-body b { color: var(--gold); }
 #btn-rules-close { display: block; margin: 18px auto 0; }
 
+/* 设置 */
+.settings-card {
+  width: min(92vw, 420px); padding: 26px; border-radius: 18px;
+  background: linear-gradient(165deg, #26403a, #12281f);
+  border: 1px solid rgba(255,211,92,.28);
+  box-shadow: 0 20px 60px rgba(0,0,0,.6);
+}
+.settings-card h2 { font-size: 20px; color: var(--gold); margin-bottom: 18px; text-align: center; }
+.setting-row {
+  display: flex; align-items: center; justify-content: space-between;
+  font-size: 15px; padding: 14px 12px; border-radius: 12px;
+  background: rgba(0,0,0,.28); margin-bottom: 20px; cursor: pointer;
+}
+.setting-row input { width: 22px; height: 22px; accent-color: #ffd35c; cursor: pointer; }
+#btn-settings-close { display: block; margin: 0 auto; }
+
 /* 结算 */
 .result-card {
   width: min(90vw, 380px); padding: 28px 26px;
